@@ -1,0 +1,52 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Error</title>
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body style="background-color: gray;">
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-12 p-5 table-responsive" >
+            <h2>Error</h2>
+            <table class="table table-bordered">
+                <tr>
+                    <td>Date</td>
+                    <td th:text="${timestamp}"/>
+                </tr>
+                <tr>
+                    <td>Path</td>
+                    <td th:text="${path}"/>
+                </tr>
+                <tr>
+                    <td>Error</td>
+                    <td th:text="${error}"/>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td th:text="${status}"/>
+                </tr>
+                <tr>
+                    <td>Message</td>
+                    <td th:text="${message}"/>
+                </tr>
+                <tr>
+                    <td>Exception</td>
+                    <td th:text="${exception}"/>
+                </tr>
+                <tr>
+                    <td>Trace</td>
+                    <td style="max-width: 100px">
+                        <pre th:text="${trace}"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

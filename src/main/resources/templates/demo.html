@@ -1,0 +1,109 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Demo</title>
+    <link href="/css/bootstrap/bootstrap-custom.css" rel="stylesheet">
+    <link href="/css/demo.css" rel="stylesheet">
+    <link href="/css/cropper.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body>
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-3 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <img id="personImg" class="rounded-circle mt-5" width="150px" src="./img/person_image_placeholder.png" style="background-color: white;">
+                <br>
+                <label for="selectPersonImg">Fotografia</label>
+                <br>
+                <button type="button" id="selectPersonImg" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#imgModal">Seleccionar imagen</button>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <form id="formPerson" action="#" th:action="@{/demo/register}" method="post" th:object="${formPerson}">
+                <div class="row">
+                    <div class="col-md-7 border-right">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Perfil</h4>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <label for="inputNombre">Nombre</label>
+                                    <input id="inputNombre" type="text" class="form-control" required value="" th:field="*{nombre}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="inputApellido">Apellido</label>
+                                    <input id="inputApellido" type="text" class="form-control" required value="" th:field="*{apellido}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="inputTelefono">Telefono</label>
+                                    <input id="inputTelefono" type="number" class="form-control" required value="" th:field="*{telefono}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="inputEmail">Email</label>
+                                    <input id="inputEmail" type="email" class="form-control" required value="" th:field="*{email}">
+                                </div>
+                                <div class="col-md-12 mt-2" style="display: none">
+                                    <input id="inputBase64Image" type="text" class="form-control" value="" th:field="*{imageBase64}">
+                                </div>
+                            </div>
+                            <div class="mt-5 text-center"><button id="submitForm" class="btn btn-infomedia" type="submit">Guardar</button></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Configuracion</h4>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="selectOrg">Organizacion</label>
+                                <select id="selectOrg" class="form-select" required th:field="*{orgId}">
+                                    <option selected value="">Seleccionar</option>
+                                    <option th:each="org: ${orgs}" th:text="${org.orgName}" th:value="${org.orgIndexCode}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <label for="selectPriv">Grupo de privilegios</label>
+                                <select id="selectPriv" class="form-select" required th:field="*{privId}">
+                                    <option selected value="">Seleccionar</option>
+                                    <option th:each="priv: ${privs}" th:text="${priv.privilegeGroupName}" th:value="${priv.privilegeGroupId}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Seleccionar imagen</h5>
+                    <button type="button" class="btn-close close-modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="img-container">
+                        <img id="imageCrop" alt="Picture" class="mx-auto d-block" src="./img/person_image_placeholder.png" style="height: 500px; width: 400px; background-color: white;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="file" id="imgFileInput" class="form-control" onchange="onFileSelected(event)">
+                    <br>
+                    <button type="button" class="btn btn-secondary ok-modal" data-bs-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/cropper.js"></script>
+<script src="/js/demo.js"></script>
+</body>
+</html>

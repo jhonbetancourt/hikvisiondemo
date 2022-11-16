@@ -1,0 +1,17 @@
+
+—
+java:S1186i"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(„φτ
+–
+java:S1186m"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(αΨ¦^
+V
+java:S4830i"@Enable server certificate validation on this SSL/TLS connection.(„φτ
+U
+java:S4830m"@Enable server certificate validation on this SSL/TLS connection.(αΨ¦^
+B
+java:S4423w",Change this code to use a stronger protocol.(ÿ¶¶Σ
+T
+java:S5527~"?Enable server hostname verification on this SSL/TLS connection.(‚«®
+B
+java:S1874Ρ"+Remove this use of "put"; it is deprecated.(ΝÒν°
+B
+java:S1874ζ"+Remove this use of "put"; it is deprecated.(ΝÒν°
