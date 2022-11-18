@@ -10,14 +10,19 @@ import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.AddPerson;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationHome;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -42,6 +47,23 @@ public class DemoService {
             log.info("Usando codigo por defecto: AAA111");
         }
 
+    }
+
+    public void login(String codigo){
+        log.info("Login: "+codigo);
+        UsernamePasswordAuthenticationToken authToken
+                = new UsernamePasswordAuthenticationToken(codigo, null, new HashSet<>());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    public void logout(HttpServletRequest request){
+        String codigo = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("Logout: "+codigo);
+        HttpSession session= request.getSession(false);
+        SecurityContextHolder.clearContext();
+        if(session != null) {
+            session.invalidate();
+        }
     }
 
     public HikcentralDataDto getHikcentralData() throws Exception {

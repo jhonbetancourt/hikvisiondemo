@@ -27,9 +27,3 @@ l
 <src/main/java/com/infomedia/hikvisiondemo/dto/PersonDto.java,f\6\f633b89a9cd8cb3caae99edafa61b4c5245e2471
 7
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
-r
-Bsrc/main/java/com/infomedia/hikvisiondemo/service/DemoService.java,3\8\38c2f5a7ff7c841f24b86b7acb1886edc80150c8
-x
-Hsrc/main/java/com/infomedia/hikvisiondemo/service/HikcentralService.java,c\b\cba150d59c9b6aabd5e116b45d09509a60e30ff6
-x
-Hsrc/main/java/com/infomedia/hikvisiondemo/controller/DemoController.java,4\f\4f4cc1a2821eebc594da80db54465bcf2210ca57

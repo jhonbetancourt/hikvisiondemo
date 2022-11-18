@@ -21,7 +21,6 @@ public class Security {
         http.httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/demo/register").authenticated();
-
         return http.build();
     }
 }

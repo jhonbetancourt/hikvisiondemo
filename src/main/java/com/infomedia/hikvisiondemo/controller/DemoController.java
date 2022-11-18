@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 
 @Controller
@@ -28,11 +29,7 @@ public class DemoController {
     @PostMapping("login")
     public String postLogin(@RequestParam String codigo, Model model) {
         if(demoService.codigoIsValid(codigo)){
-
-            UsernamePasswordAuthenticationToken authToken
-                    = new UsernamePasswordAuthenticationToken(codigo, null, new HashSet<>());
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-
+            demoService.login(codigo);
             return "redirect:/demo/register";
         }else{
             model.addAttribute("codigoIsInvalid", true);
@@ -42,9 +39,9 @@ public class DemoController {
     }
 
     @GetMapping("/logout")
-    public String logout() {
-        SecurityContextHolder.clearContext();
-        return "demo-login";
+    public String logout(HttpServletRequest request) {
+        demoService.logout(request);
+        return "redirect:/demo/login";
     }
 
     @SneakyThrows
