@@ -5,7 +5,7 @@
 	border-radius: 0;
 	border: none;
 	box-shadow: 0 0 4px rgba(0,0,0,.1);
-	height: 64px;
+	min-height: 64px;
 }
 
 .navbar .navbar-brand {

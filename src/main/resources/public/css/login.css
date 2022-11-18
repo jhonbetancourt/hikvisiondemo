@@ -1,0 +1,11 @@
+        body{
+            background-color: #0d6969;
+        }
+
+        .main-logo{
+            max-height: 100px;
+        }
+
+        .validation-msg{
+            visibility: hidden;
+        }
