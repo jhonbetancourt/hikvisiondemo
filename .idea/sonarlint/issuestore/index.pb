@@ -11,8 +11,6 @@ Xsrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/request/AddPe
 Ysrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/model/Organization.java,3\b\3bf858c685c10030096c55c5536f2534e18dca0e
 ‹
 [src/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/model/PrivilegeGroup.java,c\5\c53b3eea012202d8ac87f8dac49fee408a27abe1
-r
-Bsrc/main/java/com/infomedia/hikvisiondemo/service/TestService.java,4\2\42122fb2f3e752648a2c0476a1e50c9aa4d82632
 ˆ
 Xsrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/HikcentralOpenAPI.java,1\e\1e94b716c69d6168430420a545da18bcf50f0e23
 j
@@ -25,5 +23,5 @@ l
 <src/main/java/com/infomedia/hikvisiondemo/util/JsonFile.java,6\4\64fbe5c0d3383f4307f6708152346b59e7d59a66
 l
 <src/main/java/com/infomedia/hikvisiondemo/dto/PersonDto.java,f\6\f633b89a9cd8cb3caae99edafa61b4c5245e2471
-7
-pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
+x
+Hsrc/main/java/com/infomedia/hikvisiondemo/controller/DemoController.java,4\f\4f4cc1a2821eebc594da80db54465bcf2210ca57

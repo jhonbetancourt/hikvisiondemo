@@ -31,12 +31,6 @@ public class HikcentralService {
     @Value("${hikcentral.openapi.key}")
     private String key;
 
-    @Value("${hikcentral.openapi.eventRcv.AllowedIps}")
-    private List<String> eventRcvAllowedIps;
-
-    @Value("${hikcentral.openapi.eventRcv.Url}")
-    private String eventRcvUrl;
-
     private HikcentralOpenAPI openAPI;
 
     @PostConstruct
