@@ -1,5 +1,5 @@
     var imgtag = document.getElementById('imageCrop');
-    var placeholderImageSrc = "./img/person_image_placeholder.png";
+    var placeholderImageSrc = "/img/person_image_placeholder.png";
     var cropBoxData;
     var canvasData;
     var cropper;
@@ -47,14 +47,12 @@
         cropper.destroy();
     });
 
-    $("#submitForm").on("click", function(){
-
-    });
-
     $('#formPerson').submit(function(){
         if($("#inputBase64Image").val().length==0){
             alert("Es requerido seleccionar una fotografia");
             return false;
         }
+        var clickedSubmit = $(this).find('[type=submit]');
+        $(clickedSubmit).prop('disabled', true);
         return true;
     });

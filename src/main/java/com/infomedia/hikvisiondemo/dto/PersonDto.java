@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @Data
-public class FormPerson {
+public class PersonDto {
     @NotBlank
     private String nombre;
     @NotBlank

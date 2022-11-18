@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,11 +45,6 @@ public class HikcentralService {
     }
 
     public String registerPerson(AddPerson person, String privilegeGroupId) throws IOException {
-       /* AddPerson person = new AddPerson(null, visitante.getApellido(), visitante.getNombre(), null
-                , orgIndexCode, visitante.getTelefono(), visitante.getEmail()
-                , new String(Base64.getEncoder().encode(visitante.getFotoVisitante().getDatos()))
-                , fecha.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault())
-                , fecha.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()));*/
 
         AddResponse addResponse = openAPI.addPerson(person);
         if (!addResponse.isSuccess()) {

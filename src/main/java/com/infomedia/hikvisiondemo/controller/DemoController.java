@@ -1,74 +1,57 @@
 package com.infomedia.hikvisiondemo.controller;
 
-import com.infomedia.hikvisiondemo.dto.FormPerson;
-import com.infomedia.hikvisiondemo.service.HikcentralService;
-import com.infomedia.hikvisiondemo.util.Waiter;
-import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.AddPerson;
+import com.infomedia.hikvisiondemo.dto.PersonDto;
+import com.infomedia.hikvisiondemo.dto.HikcentralDataDto;
+import com.infomedia.hikvisiondemo.service.DemoService;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.List;
-
-@Log4j2
 @Controller
 @RequestMapping("/demo")
 public class DemoController {
 
     @Autowired
-    private HikcentralService hikcentralService;
+    private DemoService demoService;
 
+    @GetMapping("login")
+    public String getLogin() {
+        return "demo-login";
+    }
+
+    @PostMapping("login")
+    public String postLogin(@RequestParam String codigo, Model model) {
+        if(demoService.codigoIsValid(codigo)){
+            return "redirect:/demo/register";
+        }else{
+            model.addAttribute("codigoIsInvalid", true);
+            model.addAttribute("codigo", codigo);
+            return "demo-login";
+        }
+    }
 
     @SneakyThrows
-    @RequestMapping
-    public String demo(Model model) {
+    @GetMapping("/register")
+    public String getRegister(Model model) {
 
-        Waiter waiter = new Waiter(
-                () -> model.addAttribute("orgs", hikcentralService.getOrganizations())
-                , () -> model.addAttribute("privs", hikcentralService.getPrivilegeGroups()));
-        waiter.setCancelOnException(true);
+        HikcentralDataDto hikcentralDataDto = demoService.getHikcentralData();
 
-        waiter.start();
+        PersonDto personDto = new PersonDto();
 
-        if(waiter.getLastException()!=null){
-            throw waiter.getLastException();
-        }
-
-        FormPerson formPerson = new FormPerson();
-
-        model.addAttribute("formPerson", formPerson);
+        model.addAttribute("orgs", hikcentralDataDto.getOrganizations());
+        model.addAttribute("privs", hikcentralDataDto.getPrivilegeGroups());
+        model.addAttribute("personDto", personDto);
 
         return "demo";
     }
 
     @SneakyThrows
     @PostMapping("/register")
-    public String register(@ModelAttribute("formPerson") FormPerson person) {
-        log.info("Register person: "+person.getNombre()+" "+person.getApellido());
+    public String postRegister(@ModelAttribute("personDto") PersonDto personDto) {
 
-        LocalDate fecha = LocalDate.now();
-
-        AddPerson addPerson = new AddPerson();
-        addPerson.setOrgIndexCode(person.getOrgId());
-        addPerson.setPersonGivenName(person.getNombre());
-        addPerson.setPersonFamilyName(person.getApellido());
-        addPerson.setEmail(person.getEmail());
-        addPerson.setPhoneNo(person.getTelefono());
-        addPerson.setBeginTime(fecha.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault()));
-        addPerson.setEndTime(fecha.atTime(LocalTime.MAX).atZone(ZoneId.systemDefault()));
-        addPerson.setFaces(List.of(new AddPerson.Face(person.getImageBase64().split(",")[1])));
-
-        String personId = hikcentralService.registerPerson(addPerson, person.getPrivId());
-
-        log.info("Registered person id: "+personId);
+        demoService.registerPerson(personDto);
 
         return "demo-registrado";
     }

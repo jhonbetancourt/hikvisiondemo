@@ -11,7 +11,7 @@
 	<groupId>com.infomedia</groupId>
 	<artifactId>hikvisiondemo</artifactId>
 	<version>0.1</version>
-	<name>hikvisiondemo</name>
+	<name>Hikvision Demo</name>
 	<description>Hikvision demo application</description>
 	<properties>
 		<java.version>11</java.version>

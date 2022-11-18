@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Demo</title>
+
+    <link href="/css/bootstrap/bootstrap-custom.css" rel="stylesheet">
+
+    <script src="/js/jquery.min.js"></script>
+
+    <style>
+        body{
+            background-color: #0d6969;
+        }
+
+        .main-logo{
+            height: auto;
+            width: 400px;
+        }
+
+        .validation-msg{
+            visibility: hidden;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+   <div class="row">
+       <div class="col-md-12 vh-100 align-items-center d-flex">
+           <div class="w-100 text-center">
+               <img class="main-logo" src="/img/infomedia-logonly.png"/>
+               <h5 class="text-white">Hikvision Demo</h5>
+               <div class="col-md-2 col-sm-4 col-6 offset-md-5 offset-sm-4 offset-3 mt-5">
+                   <form action="#" th:action="@{/demo/login}" method="post">
+                       <div>
+                           <input name="codigo" class="form-control mt-5 text-center" th:value="${codigo}"
+                                  pattern="^[A-Z0-9]+$" minlength="6" maxlength="6" type="text" placeholder="Codigo de acceso" required>
+                           <small class="text-white validation-msg" th:styleappend="${codigoIsInvalid} ? 'visibility: visible'">
+                               El codigo ingresado es incorrecto
+                           </small>
+                       </div>
+                       <button id="submitForm" class="btn btn-outline-light mt-2" type="submit">Ingresar</button>
+                   </form>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+
+
+<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script>
+    $("input[name=codigo]").on('change keyup paste', function () {
+        $(this).siblings("small.validation-msg").css("visibility", "");
+    });
+</script>
+</body>
+</html>
