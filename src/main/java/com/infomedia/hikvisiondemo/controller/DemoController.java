@@ -4,18 +4,18 @@ import com.infomedia.hikvisiondemo.dto.PersonDto;
 import com.infomedia.hikvisiondemo.dto.HikcentralDataDto;
 import com.infomedia.hikvisiondemo.service.DemoService;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
 
 @Controller
 @RequestMapping("/demo")
+@Log4j2
 public class DemoController {
 
     @Autowired
@@ -23,7 +23,11 @@ public class DemoController {
 
     @GetMapping("login")
     public String getLogin() {
-        return "demo-login";
+        if(demoService.isAuthenticated()){
+            return "redirect:/demo/register";
+        }else{
+            return "demo-login";
+        }
     }
 
     @PostMapping("login")
@@ -66,5 +70,10 @@ public class DemoController {
         demoService.registerPerson(personDto);
 
         return "demo-registrado";
+    }
+
+    @GetMapping("swagger")
+    public RedirectView swagger(){
+        return new RedirectView("/swagger-ui/index.html");
     }
 }

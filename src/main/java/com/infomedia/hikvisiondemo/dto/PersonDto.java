@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +23,8 @@ public class PersonDto {
     @NotBlank
     private String imageBase64;
 
-    @NotNull
+    @NotBlank
     private String orgId;
-    @NotNull
+    @NotBlank
     private String privId;
 }

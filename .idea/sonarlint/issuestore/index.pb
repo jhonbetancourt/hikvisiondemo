@@ -13,15 +13,9 @@ Ysrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/model/Organiz
 [src/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/model/PrivilegeGroup.java,c\5\c53b3eea012202d8ac87f8dac49fee408a27abe1
 ˆ
 Xsrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/HikcentralOpenAPI.java,1\e\1e94b716c69d6168430420a545da18bcf50f0e23
-j
-:src/main/java/com/infomedia/hikvisiondemo/util/Waiter.java,c\3\c35b57358f5e55e012ffb2a7b9960b7b01fd7e52
 ƒ
 Ssrc/main/java/com/infomedia/hikvisiondemo/util/hikcentral/openapi/model/Person.java,5\8\58b169faada38a57349f3c05e577d7e022f09254
+x
+Hsrc/main/java/com/infomedia/hikvisiondemo/service/HikcentralService.java,c\b\cba150d59c9b6aabd5e116b45d09509a60e30ff6
 t
 Dsrc/main/java/com/infomedia/hikvisiondemo/dto/HikcentralDataDto.java,d\3\d37bab885b6f01ce5dc43736faaffdce89765e8f
-l
-<src/main/java/com/infomedia/hikvisiondemo/util/JsonFile.java,6\4\64fbe5c0d3383f4307f6708152346b59e7d59a66
-l
-<src/main/java/com/infomedia/hikvisiondemo/dto/PersonDto.java,f\6\f633b89a9cd8cb3caae99edafa61b4c5245e2471
-x
-Hsrc/main/java/com/infomedia/hikvisiondemo/controller/DemoController.java,4\f\4f4cc1a2821eebc594da80db54465bcf2210ca57
