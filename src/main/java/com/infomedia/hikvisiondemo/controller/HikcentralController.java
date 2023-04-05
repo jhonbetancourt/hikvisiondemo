@@ -1,6 +1,7 @@
 package com.infomedia.hikvisiondemo.controller;
 
 import com.infomedia.hikvisiondemo.service.HikcentralService;
+import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.FaceComparisonGroup;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.Organization;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.PrivilegeGroup;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,5 +33,11 @@ public class HikcentralController {
     @GetMapping("organizations")
     public List<Organization> getOrganizations() {
         return hikcentralService.getOrganizations();
+    }
+
+    @SneakyThrows
+    @GetMapping("faceComparisonGroups")
+    public List<FaceComparisonGroup> getFaceComparisonGroups() {
+        return hikcentralService.getFaceComparisonGroups();
     }
 }

@@ -13,10 +13,12 @@ import lombok.NoArgsConstructor;
 public class NormalResponse {
     private boolean success;
     private String msg;
+    private int code;
 
     public NormalResponse(String openapiResponseJson, ObjectMapper objectMapper) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(openapiResponseJson);
         msg = jsonNode.get("msg").asText();
-        success = jsonNode.get("code").asInt()==0;
+        code = jsonNode.get("code").asInt();
+        success = code==0;
     }
 }

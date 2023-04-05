@@ -14,13 +14,17 @@ public class GetResponse <T> {
     private boolean success;
     private String msg;
     private T data;
+    private int code;
 
     public GetResponse(String openapiResponseJson, ObjectMapper objectMapper, Class<T> type) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(openapiResponseJson);
         msg = jsonNode.get("msg").asText();
-        success = jsonNode.get("code").asInt()==0;
+        code = jsonNode.get("code").asInt();
+        success = code==0;
         if(success){
             data = objectMapper.readValue(jsonNode.get("data").toString(), type);
         }
     }
+
+
 }

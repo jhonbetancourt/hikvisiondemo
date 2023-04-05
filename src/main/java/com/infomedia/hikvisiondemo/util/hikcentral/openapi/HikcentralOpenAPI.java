@@ -319,10 +319,91 @@ public class HikcentralOpenAPI {
         String responseStr = response.body().string();
 
         if(responseStr.contains("base64,")){
-            return new GetResponse<>(true, "Success", responseStr.split("base64,")[1]);
+            return new GetResponse<>(true, "Success", responseStr.split("base64,")[1], 0);
         }else{
-            return new GetResponse<>( false, responseStr, null);
+            return new GetResponse<>( false, responseStr, null, -1);
         }
+    }
+
+    public ListResponse<FaceComparisonGroup> listFaceComparisonGroup() throws IOException {
+        final MediaType jsonType
+                = MediaType.parse("application/json");
+
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put(PARAM_PAGE_NO, 1);
+        jsonNode.put(PARAM_PAGE_SIZE, 500);
+
+        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
+
+        Request request = new Request.Builder()
+                .url(url +"/artemis/api/frs/v1/face/groupList")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new ListResponse<>(response.body().string(), objectMapper, new TypeReference<>(){});
+    }
+
+    public NormalResponse addFaceComparisonGroupPerson(AddFaceComparisonGroupPerson faceComparisonGroupPerson) throws IOException {
+        final MediaType jsonType
+                = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(objectMapper.writeValueAsString(faceComparisonGroupPerson), jsonType);
+        Request request = new Request.Builder()
+                .url(url+"/artemis/api/frs/v1/face/single/addition")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new NormalResponse(response.body().string(), objectMapper);
+    }
+
+    public NormalResponse faceComparisonGroupReapplication(String faceComparisonGroupId) throws IOException {
+        final MediaType jsonType
+                = MediaType.parse("application/json");
+
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put("indexCode", faceComparisonGroupId);
+
+        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
+
+        Request request = new Request.Builder()
+                .url(url+"/artemis/api/frs/v1/plan/recognition/black/restart")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new NormalResponse(response.body().string(), objectMapper);
+    }
+
+    public GetResponse<Person> getPersonByCode(String personCode) throws IOException {
+        final MediaType jsonType
+                = MediaType.parse(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
+
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put("personCode", personCode);
+
+        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
+        Request request = new Request.Builder()
+                .url(url+"/artemis/api/resource/v1/person/personCode/personInfo")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new GetResponse<>(response.body().string(), objectMapper, Person.class);
+    }
+
+    public NormalResponse faceCheck(String faceData, String acsDevIndexCode) throws IOException {
+        final MediaType jsonType
+                = MediaType.parse("application/json");
+
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put("faceData", faceData);
+        jsonNode.put("acsDevIndexCode", acsDevIndexCode);
+
+        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
+
+        Request request = new Request.Builder()
+                .url(url+"/artemis/api/acs/v1/faceCheck")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new NormalResponse(response.body().string(), objectMapper);
     }
 
     public NormalResponse eventSubscriptionByEventTypes(EventSubscriptionRequest eventSubscriptionRequest) throws IOException {

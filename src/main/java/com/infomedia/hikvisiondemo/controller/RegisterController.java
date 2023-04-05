@@ -23,7 +23,7 @@ public class RegisterController {
     private DemoService demoService;
 
     @SneakyThrows
-    @PostMapping("/api/register")
+    @PostMapping("demo/api/register")
     public ResponseEntity<MessageResponse> apiPostRegister(@Valid @RequestBody PersonDto personDto) {
 
         demoService.registerPerson(personDto);

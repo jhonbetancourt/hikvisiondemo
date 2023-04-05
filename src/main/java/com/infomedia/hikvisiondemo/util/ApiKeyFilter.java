@@ -45,6 +45,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         if(!apiKey.isBlank()){
             ValidationResult validationResult = validator.validate(apiKey);
             if(validationResult.isValid()){
+                log.info("Using Api Key: "+apiKey);
                 UsernamePasswordAuthenticationToken authToken
                         = new UsernamePasswordAuthenticationToken(validationResult.getPrincipal()
                         , null, new HashSet<>());

@@ -14,11 +14,13 @@ public class AddResponse {
     private boolean success;
     private String msg;
     private String id;
+    private int code;
 
     public AddResponse(String openapiResponseJson, ObjectMapper objectMapper) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(openapiResponseJson);
         msg = jsonNode.get("msg").asText();
-        success = jsonNode.get("code").asInt()==0;
+        code = jsonNode.get("code").asInt();
+        success = code==0;
         if(success){
             id = jsonNode.get("data").asText();
         }

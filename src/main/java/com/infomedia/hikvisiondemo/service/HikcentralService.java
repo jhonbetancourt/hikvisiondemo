@@ -3,6 +3,7 @@ package com.infomedia.hikvisiondemo.service;
 import com.infomedia.hikvisiondemo.exception.HikcentralException;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.HikcentralOpenAPI;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.*;
+import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.AddFaceComparisonGroupPerson;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.AddPerson;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.PrivilegeGroupPersons;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.response.AddResponse;
@@ -31,6 +32,9 @@ public class HikcentralService {
     @Value("${hikcentral.openapi.key}")
     private String key;
 
+    @Value("${hikcentral.openapi.faceCheckAcsDevIndexCode}")
+    private String faceCheckAcsDevIndexCode;
+
     private HikcentralOpenAPI openAPI;
 
     @PostConstruct
@@ -38,52 +42,81 @@ public class HikcentralService {
         openAPI = new HikcentralOpenAPI(url, key, secret);
     }
 
-    public String registerPerson(AddPerson person, String privilegeGroupId) throws IOException {
+    public String registerPerson(AddPerson person, String privilegeGroupId, String faceComparisonGroupId) throws IOException {
+
+        faceCheck(person);
+
+        GetResponse<Person> getPersonResponse = openAPI.getPersonByCode(person.getPersonCode());
+        if (getPersonResponse.isSuccess()) {
+            openAPI.deletePerson(getPersonResponse.getData().getPersonId());
+        }
 
         AddResponse addResponse = openAPI.addPerson(person);
         if (!addResponse.isSuccess()) {
             throw new HikcentralException(addResponse.getMsg());
         }
 
-        GetResponse<Person> personGetResponse = openAPI.getPerson(addResponse.getId());
-        if (!personGetResponse.isSuccess()) {
-            throw new HikcentralException(personGetResponse.getMsg());
+        try {
+            registerPersonPrivilegeGroup(addResponse.getId(), privilegeGroupId);
+        }catch (Exception e){
+            openAPI.deletePerson(addResponse.getId());
+            throw e;
         }
 
         try {
-            registerPersonPrivilegeGroup(personGetResponse.getData(), privilegeGroupId);
+            registrarPersonFaceComparisonGroup(addResponse.getId(), faceComparisonGroupId);
         }catch (Exception e){
-            openAPI.deletePerson(personGetResponse.getData().getPersonId());
+            openAPI.deletePerson(addResponse.getId());
             throw e;
+        }
+
+        NormalResponse fcgReapplicationResponse = openAPI
+                .faceComparisonGroupReapplication(faceComparisonGroupId);
+        if (!fcgReapplicationResponse.isSuccess()) {
+            openAPI.deletePerson(addResponse.getId());
+            throw new HikcentralException(fcgReapplicationResponse.getMsg());
+        }
+
+        NormalResponse reapplicationResponse = openAPI.personAccessLevelReapplication();
+        if (!reapplicationResponse.isSuccess()) {
+            openAPI.deletePerson(addResponse.getId());
+            throw new HikcentralException(reapplicationResponse.getMsg());
+        }
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         return addResponse.getId();
     }
 
-    public void registerPersonPrivilegeGroup(Person person, String privilegeGroupId) throws IOException, HikcentralException {
+    public void registerPersonPrivilegeGroup(String personIdStr, String privilegeGroupId) throws IOException, HikcentralException {
         PrivilegeGroupPersons privilegeGroupPersons = new PrivilegeGroupPersons();
         privilegeGroupPersons.setPrivilegeGroupId(privilegeGroupId);
         privilegeGroupPersons.setType(1);
         privilegeGroupPersons.setList(new ArrayList<>());
-        PersonId personId = new PersonId(person.getPersonId());
+        PersonId personId = new PersonId(personIdStr);
         privilegeGroupPersons.getList().add(personId);
 
         NormalResponse privilegeResponse = openAPI.addPrivilegeGroupPersons(privilegeGroupPersons);
         if (!privilegeResponse.isSuccess()) {
             throw new HikcentralException(privilegeResponse.getMsg());
         }
+    }
 
-        NormalResponse reapplicationResponse = openAPI.personAccessLevelReapplication();
-        if (!reapplicationResponse.isSuccess()) {
-            throw new HikcentralException(reapplicationResponse.getMsg());
-        }
+    private void registrarPersonFaceComparisonGroup(String idPerson, String faceComparisonGroupId) throws IOException {
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        NormalResponse addPersonFcgResponse = openAPI.addFaceComparisonGroupPerson(
+                new AddFaceComparisonGroupPerson(idPerson, faceComparisonGroupId));
+
+        if (!addPersonFcgResponse.isSuccess()) {
+            throw new HikcentralException(addPersonFcgResponse.getMsg());
         }
     }
+
+
 
     public List<PrivilegeGroup> getPrivilegeGroups() throws IOException {
         ListResponse<PrivilegeGroup> privilegeGroupListResponse =
@@ -100,6 +133,10 @@ public class HikcentralService {
         return openAPI.listOrganization().getDataList();
     }
 
+    public List<FaceComparisonGroup> getFaceComparisonGroups() throws IOException {
+        return openAPI.listFaceComparisonGroup().getDataList();
+    }
+
     public List<Door> getDoors() throws IOException {
         ListResponse<Door> doorListResponse = openAPI.listDoor();
         if (!doorListResponse.isSuccess()) {
@@ -114,5 +151,24 @@ public class HikcentralService {
             throw new HikcentralException(doorGetResponse.getMsg());
         }
         return doorGetResponse.getData();
+    }
+
+    public void faceCheck(AddPerson addPerson) throws IOException {
+        for(AddPerson.Face f :addPerson.getFaces()){
+            faceCheck(f.getFaceData());
+        }
+    }
+
+    public void faceCheck(String faceDataBase64) throws IOException {
+        NormalResponse faceCheckResponse = openAPI.faceCheck(faceDataBase64
+                , faceCheckAcsDevIndexCode);
+
+        if (!faceCheckResponse.isSuccess()) {
+            if(faceCheckResponse.getCode()==128){
+                throw new HikcentralException("Person face picture is not valid");
+            }else{
+                throw new HikcentralException(faceCheckResponse.getMsg());
+            }
+        }
     }
 }

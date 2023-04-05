@@ -8,6 +8,7 @@ import com.infomedia.hikvisiondemo.util.ApiKeyFilter;
 import com.infomedia.hikvisiondemo.util.JsonFile;
 import com.infomedia.hikvisiondemo.util.Waiter;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.request.AddPerson;
+import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.system.ApplicationHome;
@@ -82,7 +83,6 @@ public class DemoService {
         log.info("Login: "+codigo);
         UsernamePasswordAuthenticationToken authToken
                 = new UsernamePasswordAuthenticationToken(codigo, null, new HashSet<>());
-        log.info("Login: "+authToken.isAuthenticated());
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 
@@ -123,12 +123,14 @@ public class DemoService {
         return hikcentralDataDto;
     }
 
+    @Synchronized
     public String registerPerson(PersonDto personDto) throws IOException {
-        log.info("Register person: "+ personDto.getNombre()+" "+ personDto.getApellido());
+        log.info("Register person: "+personDto);
 
         LocalDate fecha = LocalDate.now();
 
         AddPerson addPerson = new AddPerson();
+        addPerson.setPersonCode(personDto.getIdentificacion());
         addPerson.setOrgIndexCode(personDto.getOrgId());
         addPerson.setPersonGivenName(personDto.getNombre());
         addPerson.setPersonFamilyName(personDto.getApellido());
@@ -142,7 +144,7 @@ public class DemoService {
             addPerson.setFaces(List.of(new AddPerson.Face(personDto.getImageBase64())));
         }
 
-        String personId = hikcentralService.registerPerson(addPerson, personDto.getPrivId());
+        String personId = hikcentralService.registerPerson(addPerson, personDto.getPrivId(), personDto.getFcgId());
 
         log.info("Registered person id: "+personId);
 
