@@ -111,7 +111,8 @@ public class DemoService {
 
         Waiter waiter = new Waiter(
                 () -> hikcentralDataDto.setOrganizations(hikcentralService.getOrganizations())
-                , () -> hikcentralDataDto.setPrivilegeGroups(hikcentralService.getPrivilegeGroups()));
+                , () -> hikcentralDataDto.setPrivilegeGroups(hikcentralService.getPrivilegeGroups())
+                , () -> hikcentralDataDto.setFaceComparisonGroups(hikcentralService.getFaceComparisonGroups()));
         waiter.setCancelOnException(true);
 
         waiter.start();

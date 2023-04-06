@@ -1,5 +1,6 @@
 package com.infomedia.hikvisiondemo.dto;
 
+import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.FaceComparisonGroup;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.Organization;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.model.PrivilegeGroup;
 import lombok.AllArgsConstructor;
@@ -16,4 +17,5 @@ import java.util.List;
 public class HikcentralDataDto {
     private List<Organization> organizations;
     private List<PrivilegeGroup> privilegeGroups;
+    private List<FaceComparisonGroup> faceComparisonGroups;
 }

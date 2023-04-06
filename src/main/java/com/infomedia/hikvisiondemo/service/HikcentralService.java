@@ -165,7 +165,7 @@ public class HikcentralService {
 
         if (!faceCheckResponse.isSuccess()) {
             if(faceCheckResponse.getCode()==128){
-                throw new HikcentralException("Person face picture is not valid");
+                throw new HikcentralException("La imagen de la persona no es válida");
             }else{
                 throw new HikcentralException(faceCheckResponse.getMsg());
             }

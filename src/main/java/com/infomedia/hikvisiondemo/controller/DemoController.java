@@ -4,7 +4,6 @@ import com.infomedia.hikvisiondemo.dto.PersonDto;
 import com.infomedia.hikvisiondemo.dto.HikcentralDataDto;
 import com.infomedia.hikvisiondemo.service.DemoService;
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/demo")
-@Log4j2
 public class DemoController {
 
     @Autowired
@@ -58,18 +56,10 @@ public class DemoController {
 
         model.addAttribute("orgs", hikcentralDataDto.getOrganizations());
         model.addAttribute("privs", hikcentralDataDto.getPrivilegeGroups());
+        model.addAttribute("fcgs", hikcentralDataDto.getFaceComparisonGroups());
         model.addAttribute("personDto", personDto);
 
         return "demo";
-    }
-
-    @SneakyThrows
-    @PostMapping("/register")
-    public String postRegister(@ModelAttribute("personDto") PersonDto personDto) {
-
-        demoService.registerPerson(personDto);
-
-        return "demo-registrado";
     }
 
     @GetMapping("swagger")
