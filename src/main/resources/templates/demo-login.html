@@ -5,17 +5,17 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Demo</title>
 
-    <link href="/css/bootstrap/bootstrap-custom.css" rel="stylesheet">
-    <link href="/css/login.css" rel="stylesheet">
+    <link href="./css/bootstrap/bootstrap-custom.css" rel="stylesheet">
+    <link href="./css/login.css" rel="stylesheet">
 
-    <script src="/js/jquery.min.js"></script>
+    <script src="./js/jquery.min.js"></script>
 </head>
 <body>
 <div class="container-fluid">
    <div class="row">
        <div class="col-md-12 vh-100 align-items-center d-flex">
            <div class="w-100 text-center">
-               <img class="img-fluid main-logo" src="/img/infomedia-logonly.png"/>
+               <img class="img-fluid main-logo" src="./img/infomedia-logonly.png"/>
                <h5 class="text-white">Hikvision Demo</h5>
                <div class="col-md-2 col-sm-4 col-6 offset-md-5 offset-sm-4 offset-3 mt-5">
                    <form action="#" th:action="@{/demo/login}" method="post">
@@ -35,7 +35,7 @@
 </div>
 
 
-<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="./js/bootstrap/bootstrap.bundle.min.js"></script>
 <script>
     $("input[name=codigo]").on('change keyup paste', function () {
         $(this).siblings("small.validation-msg").css("visibility", "");

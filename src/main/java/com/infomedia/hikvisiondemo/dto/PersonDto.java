@@ -1,5 +1,6 @@
 package com.infomedia.hikvisiondemo.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 public class PersonDto {
 
     @NotBlank
+    @Schema(example = "1112223333")
     private String identificacion;
     @NotBlank
     private String nombre;
@@ -23,9 +25,11 @@ public class PersonDto {
     private String apellido;
     @Size(min = 1)
     @Pattern(regexp = "[0-9]+", message = "ingresado no es valido")
+    @Schema(example = "3005556666")
     private String telefono;
     @Size(min = 1)
     @Pattern(regexp = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", message = "ingresado no es valido")
+    @Schema(example = "example@domain.com")
     private String email;
     @NotBlank
     private String imageBase64;

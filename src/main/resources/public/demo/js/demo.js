@@ -1,5 +1,5 @@
     var imgtag = document.getElementById('imageCrop');
-    var placeholderImageSrc = "/img/person_image_placeholder.png";
+    var placeholderImageSrc = "./img/person_image_placeholder.png";
     var registerUrl = "./register";
     var cropBoxData;
     var canvasData;

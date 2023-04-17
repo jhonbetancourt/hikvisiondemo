@@ -164,7 +164,8 @@ public class HikcentralService {
                 , faceCheckAcsDevIndexCode);
 
         if (!faceCheckResponse.isSuccess()) {
-            if(faceCheckResponse.getCode()==128){
+            if(faceCheckResponse.getCode()==128&&
+                    faceCheckResponse.getMsg().contains("person data is invalid")){
                 throw new HikcentralException("La imagen de la persona no es válida");
             }else{
                 throw new HikcentralException(faceCheckResponse.getMsg());
