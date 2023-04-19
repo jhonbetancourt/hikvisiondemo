@@ -13,6 +13,7 @@ import com.infomedia.hikvisiondemo.util.hikcentral.openapi.response.GetResponse;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.response.ListResponse;
 import com.infomedia.hikvisiondemo.util.hikcentral.openapi.response.NormalResponse;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -27,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
+
+@Log4j2
 public class HikcentralOpenAPI {
 
     private OkHttpClient client;
@@ -34,6 +37,8 @@ public class HikcentralOpenAPI {
     private String secret;
     private String url;
     private ObjectMapper objectMapper;
+
+    private FaceCheck faceCheck;
 
     private static final String PARAM_PAGE_NO = "pageNo";
     private static final String PARAM_PAGE_SIZE = "pageSize";
@@ -49,6 +54,8 @@ public class HikcentralOpenAPI {
         objectMapper.findAndRegisterModules();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        faceCheck = new FaceCheck();
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -388,24 +395,6 @@ public class HikcentralOpenAPI {
         return new GetResponse<>(response.body().string(), objectMapper, Person.class);
     }
 
-    public NormalResponse faceCheck(String faceData, String acsDevIndexCode) throws IOException {
-        final MediaType jsonType
-                = MediaType.parse("application/json");
-
-        ObjectNode jsonNode = objectMapper.createObjectNode();
-        jsonNode.put("faceData", faceData);
-        jsonNode.put("acsDevIndexCode", acsDevIndexCode);
-
-        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
-
-        Request request = new Request.Builder()
-                .url(url+"/artemis/api/acs/v1/faceCheck")
-                .post(body)
-                .build();
-        Response response = client.newCall(request).execute();
-        return new NormalResponse(response.body().string(), objectMapper);
-    }
-
     public NormalResponse eventSubscriptionByEventTypes(EventSubscriptionRequest eventSubscriptionRequest) throws IOException {
         final MediaType jsonType
                 = MediaType.parse(org.springframework.http.MediaType.APPLICATION_JSON_VALUE);
@@ -660,6 +649,87 @@ public class HikcentralOpenAPI {
                 .build();
         Response response = client.newCall(request).execute();
         return new NormalResponse(response.body().string(), objectMapper);
+    }
+
+    private NormalResponse faceCheck(String faceData, String acsDevIndexCode) throws IOException {
+        final MediaType jsonType
+                = MediaType.parse("application/json");
+
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put("faceData", faceData);
+        jsonNode.put("acsDevIndexCode", acsDevIndexCode);
+
+        RequestBody body = RequestBody.create(jsonNode.toString(), jsonType);
+
+        Request request = new Request.Builder()
+                .url(url+"/artemis/api/acs/v1/faceCheck")
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        return new NormalResponse(response.body().string(), objectMapper);
+    }
+
+    public boolean faceIsValid(String faceData) throws IOException {
+        return faceCheck.ifaceIsValid(faceData);
+    }
+
+    public class FaceCheck {
+
+        private String faceCheckAcsDevIndexCode;
+
+        private void selectFaceCheckAcsDevIndexCode() throws IOException {
+
+            ListResponse<Door> doorListResponse = listDoor();
+
+            if(!doorListResponse.isSuccess()){
+                throw new RuntimeException(doorListResponse.getMsg());
+            }
+
+            for(Door d : doorListResponse.getDataList()){
+                NormalResponse faceCheckResponse = faceCheck("..."
+                        , d.getAcsDevIndexCode());
+
+                if(checkInvalidPersonData(faceCheckResponse.getCode(), faceCheckResponse.getMsg())){
+                    faceCheckAcsDevIndexCode = d.getAcsDevIndexCode();
+                    log.info("acsDevIndexCode selected: " + faceCheckAcsDevIndexCode);
+                    return;
+                }
+            }
+
+            throw new RuntimeException("A valid access control device was not" +
+                    " found to perform image verification");
+        }
+
+        public boolean ifaceIsValid(String faceDataBase64) throws IOException {
+            if(faceCheckAcsDevIndexCode == null){
+                selectFaceCheckAcsDevIndexCode();
+            }
+
+            NormalResponse faceCheckResponse = faceCheck(faceDataBase64
+                    , faceCheckAcsDevIndexCode);
+
+            if (!faceCheckResponse.isSuccess()) {
+                if(checkInvalidAcsDevice(faceCheckResponse.getCode(), faceCheckResponse.getMsg())) {
+                    selectFaceCheckAcsDevIndexCode();
+                    return ifaceIsValid(faceDataBase64);
+                }else if(checkInvalidPersonData(faceCheckResponse.getCode(), faceCheckResponse.getMsg())){
+                    return false;
+                }else{
+                    throw new RuntimeException(faceCheckResponse.getMsg());
+                }
+            }
+
+            return true;
+        }
+
+        private boolean checkInvalidPersonData(int code, String msg){
+            return code == 128 && msg.contains("person data is invalid");
+        }
+
+        private boolean checkInvalidAcsDevice(int code, String msg){
+            return code == 128 && msg.equals("The request resource does not exist") ||
+                    code == 195 && msg.contains("device not support");
+        }
     }
 
 }

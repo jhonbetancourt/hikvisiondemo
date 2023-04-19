@@ -32,9 +32,6 @@ public class HikcentralService {
     @Value("${hikcentral.openapi.key}")
     private String key;
 
-    @Value("${hikcentral.openapi.faceCheckAcsDevIndexCode}")
-    private String faceCheckAcsDevIndexCode;
-
     private HikcentralOpenAPI openAPI;
 
     @PostConstruct
@@ -44,7 +41,11 @@ public class HikcentralService {
 
     public String registerPerson(AddPerson person, String privilegeGroupId, String faceComparisonGroupId) throws IOException {
 
-        faceCheck(person);
+        for(AddPerson.Face f :person.getFaces()){
+            if(!openAPI.faceIsValid(f.getFaceData())){
+                throw new HikcentralException("La imagen de la persona no es valida");
+            }
+        }
 
         GetResponse<Person> getPersonResponse = openAPI.getPersonByCode(person.getPersonCode());
         if (getPersonResponse.isSuccess()) {
@@ -151,25 +152,5 @@ public class HikcentralService {
             throw new HikcentralException(doorGetResponse.getMsg());
         }
         return doorGetResponse.getData();
-    }
-
-    public void faceCheck(AddPerson addPerson) throws IOException {
-        for(AddPerson.Face f :addPerson.getFaces()){
-            faceCheck(f.getFaceData());
-        }
-    }
-
-    public void faceCheck(String faceDataBase64) throws IOException {
-        NormalResponse faceCheckResponse = openAPI.faceCheck(faceDataBase64
-                , faceCheckAcsDevIndexCode);
-
-        if (!faceCheckResponse.isSuccess()) {
-            if(faceCheckResponse.getCode()==128&&
-                    faceCheckResponse.getMsg().contains("person data is invalid")){
-                throw new HikcentralException("La imagen de la persona no es válida");
-            }else{
-                throw new HikcentralException(faceCheckResponse.getMsg());
-            }
-        }
     }
 }
